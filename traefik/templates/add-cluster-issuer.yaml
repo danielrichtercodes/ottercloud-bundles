@@ -11,12 +11,11 @@ spec:
           kinds:
             - Ingress
 
-      preconditions:
-        all:
-          - key: {{ printf "{{ default(request.object.metadata.annotations.\"cert-manager.io/cluster-issuer\", \"\") }}" | quote }}
-            operator: Equals
-            value: ""
-
+      #preconditions:
+      #  all:
+      #    - key: {{ printf "{{ default(request.object.metadata.annotations.\"cert-manager.io/cluster-issuer\", \"\") }}" | quote }}
+      #      operator: Equals
+      #      value: ""
       mutate:
         patchStrategicMerge:
           metadata:
