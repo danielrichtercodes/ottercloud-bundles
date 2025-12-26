@@ -1,0 +1,23 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: enforce-podsecurity-privileged
+spec:
+  background: true
+  validationFailureAction: Enforce
+  rules:
+    - name: add-podsecurity-enforce-privileged
+      match:
+        any:
+          - resources:
+              kinds:
+                - Namespace
+              names:
+              {{- range .Values.modules.privilegedNamespaces.namespaces }}
+                - {{ . | quote }}
+              {{- end }}
+      mutate:
+        patchStrategicMerge:
+          metadata:
+            labels:
+              pod-security.kubernetes.io/enforce: privileged

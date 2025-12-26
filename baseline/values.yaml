@@ -1,0 +1,8 @@
+modules:
+  privilegedNamespaces:
+    namespaces: []
+  imagePullSecret:
+    registry: ghcr.io
+    username:
+    password:
+    email: unused@example.com
