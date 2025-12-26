@@ -1,0 +1,5 @@
+kyverno:
+  enabled: true
+certManager:
+  enabled: true
+issuer: "letsencrypt-prod"
