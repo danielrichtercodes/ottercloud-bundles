@@ -1,0 +1,13 @@
+bgp:
+  myASN: 64522
+  peerASN: 64520
+  peerAddress: 192.168.178.1
+  pools:
+    static:
+      addresses:
+        - 192.168.210.0/24
+      #    - fd00:0:1::/48
+    dynamic:
+      addresses:
+        - 192.168.212.0/24
+      #    - fd00:0:2::/48
