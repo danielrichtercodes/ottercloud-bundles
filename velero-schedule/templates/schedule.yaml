@@ -1,0 +1,50 @@
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: gfs-daily-pv-pvc
+spec:
+  schedule: "0 2 * * *"
+  template:
+    ttl: 336h # 14d
+    includedNamespaces:
+      - "*"
+    includedNamespaceScopedResources:
+      - persistentvolumeclaims
+    includedClusterScopedResources:
+      - persistentvolumes
+    excludedClusterScopedResources:
+      - namespaces
+---
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: gfs-weekly-pv-pvc
+spec:
+  schedule: "0 3 * * 0" # Sunday
+  template:
+    ttl: 1344h # 8w
+    includedNamespaces:
+      - "*"
+    includedNamespaceScopedResources:
+      - persistentvolumeclaims
+    includedClusterScopedResources:
+      - persistentvolumes
+    excludedClusterScopedResources:
+      - namespaces
+---
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: gfs-monthly-pv-pvc
+spec:
+  schedule: "0 4 1 * *" # 1st day of month
+  template:
+    ttl: 8760h # ~365d
+    includedNamespaces:
+      - "*"
+    includedNamespaceScopedResources:
+      - persistentvolumeclaims
+    includedClusterScopedResources:
+      - persistentvolumes
+    excludedClusterScopedResources:
+      - namespaces
