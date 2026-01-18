@@ -1,0 +1,30 @@
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDatasource
+metadata:
+  name: prometheus
+spec:
+  allowCrossNamespaceImport: true
+  instanceSelector:
+    matchLabels:
+      grafana: dev
+  valuesFrom:
+    - targetPath: "basicAuthUser"
+      valueFrom:
+        secretKeyRef:
+          name: "prometheus-secret"
+          key: "username"
+    - targetPath: "secureJsonData.basicAuthPassword"
+      valueFrom:
+        secretKeyRef:
+          name: "prometheus-secret"
+          key: "password"
+  datasource:
+    name: prometheus
+    type: prometheus
+    access: proxy
+    basicAuth: true
+    url: http://prometheus-operated.monitoring:9090
+    isDefault: true
+    basicAuthUser: ${username}
+    secureJsonData:
+      "basicAuthPassword": ${password}
