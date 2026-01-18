@@ -1,0 +1,324 @@
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: cluster-resources-dashboard
+  namespace: monitoring
+spec:
+  allowCrossNamespaceImport: true
+  folder: "General"
+  instanceSelector:
+    matchLabels:
+      grafana: dev
+  configMapRef:
+    name: cluster-resources-dashboard
+    key: dashboard.json
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cluster-resources-dashboard
+  namespace: monitoring
+data:
+  dashboard.json: |
+    {
+      "annotations": {
+        "list": [
+          {
+            "builtIn": 1,
+            "datasource": {
+              "type": "grafana",
+              "uid": "-- Grafana --"
+            },
+            "enable": true,
+            "hide": true,
+            "iconColor": "rgba(0, 211, 255, 1)",
+            "name": "Annotations & Alerts",
+            "type": "dashboard"
+          }
+        ]
+      },
+      "editable": true,
+      "fiscalYearStartMonth": 0,
+      "graphTooltip": 0,
+      "id": 0,
+      "links": [],
+      "panels": [
+        {
+          "datasource": {
+            "uid": "$datasource"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineStyle": {
+                  "fill": "solid"
+                },
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "showValues": false,
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "bytes"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Usage  "
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "red",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 22,
+            "w": 24,
+            "x": 0,
+            "y": 0
+          },
+          "id": 3,
+          "options": {
+            "legend": {
+              "calcs": [
+                "mean",
+                "min",
+                "max"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "12.2.0",
+          "targets": [
+            {
+              "editorMode": "code",
+              "expr": "sum(container_memory_working_set_bytes{\r\n  container!=\"\",\r\n  image!=\"\",\r\n  namespace=~\"$namespace\",\r\n  pod=~\"$pod\",\r\n  container=~\"$container\",\r\n})by(\"$groupby\")",
+              "hide": false,
+              "legendFormat": "Usage {{node}} {{namespace}} {{pod}} {{container}}",
+              "range": true,
+              "refId": "A"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "e5751cdf-89e3-4c7d-9bac-27197780a2d9"
+              },
+              "editorMode": "code",
+              "expr": "sum(kube_pod_container_resource_requests{\r\n  resource=\"memory\",\r\n  namespace=~\"$namespace\",\r\n  pod=~\"$pod\",\r\n  container=~\"$container\",\r\n})by(\"$groupby\")",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "Requests {{node}} {{namespace}} {{pod}} {{container}}",
+              "range": true,
+              "refId": "B"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "e5751cdf-89e3-4c7d-9bac-27197780a2d9"
+              },
+              "editorMode": "code",
+              "expr": "sum(kube_pod_container_resource_limits{\r\n  resource=\"memory\",\r\n  namespace=~\"$namespace\",\r\n  pod=~\"$pod\",\r\n  container=~\"$container\",\r\n})by(\"$groupby\")",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "Limits {{node}} {{namespace}} {{pod}} {{container}}",
+              "range": true,
+              "refId": "C"
+            }
+          ],
+          "title": "Memory",
+          "type": "timeseries"
+        }
+      ],
+      "preload": false,
+      "schemaVersion": 42,
+      "tags": [],
+      "templating": {
+        "list": [
+          {
+            "allowCustomValue": false,
+            "current": {
+              "text": "All",
+              "value": [
+                "$__all"
+              ]
+            },
+            "datasource": {
+              "type": "prometheus",
+              "uid": "prometheus"
+            },
+            "definition": "label_values(kube_namespace_status_phase, namespace)",
+            "includeAll": true,
+            "label": "Namespace",
+            "multi": true,
+            "name": "namespace",
+            "options": [],
+            "query": {
+              "qryType": 1,
+              "query": "label_values(kube_namespace_status_phase, namespace)",
+              "refId": "VarQ-namespace"
+            },
+            "refresh": 2,
+            "regex": "",
+            "sort": 1,
+            "type": "query"
+          },
+          {
+            "allowCustomValue": false,
+            "current": {
+              "text": "All",
+              "value": [
+                "$__all"
+              ]
+            },
+            "datasource": {
+              "type": "prometheus",
+              "uid": "prometheus"
+            },
+            "definition": "label_values(kube_pod_container_info{namespace=~\"$namespace\"},pod)",
+            "includeAll": true,
+            "label": "Pod",
+            "multi": true,
+            "name": "pod",
+            "options": [],
+            "query": {
+              "qryType": 1,
+              "query": "label_values(kube_pod_container_info{namespace=~\"$namespace\"},pod)",
+              "refId": "PrometheusVariableQueryEditor-VariableQuery"
+            },
+            "refresh": 2,
+            "regex": "",
+            "type": "query"
+          },
+          {
+            "allowCustomValue": false,
+            "current": {
+              "text": "All",
+              "value": "$__all"
+            },
+            "definition": "label_values(kube_pod_container_info{namespace=~\"$namespace\", pod=~\"$pod\"},container)",
+            "includeAll": true,
+            "label": "Container",
+            "multi": true,
+            "name": "container",
+            "options": [],
+            "query": {
+              "qryType": 1,
+              "query": "label_values(kube_pod_container_info{namespace=~\"$namespace\", pod=~\"$pod\"},container)",
+              "refId": "PrometheusVariableQueryEditor-VariableQuery"
+            },
+            "refresh": 1,
+            "regex": "",
+            "sort": 1,
+            "type": "query"
+          },
+          {
+            "allowCustomValue": false,
+            "current": {
+              "text": [
+                "$__all"
+              ],
+              "value": [
+                "$__all"
+              ]
+            },
+            "includeAll": true,
+            "label": "Group",
+            "multi": true,
+            "name": "groupby",
+            "options": [
+              {
+                "selected": false,
+                "text": "namespace",
+                "value": "namespace"
+              },
+              {
+                "selected": false,
+                "text": "node",
+                "value": "node"
+              },
+              {
+                "selected": false,
+                "text": "pod",
+                "value": "pod"
+              },
+              {
+                "selected": false,
+                "text": "container",
+                "value": "container"
+              }
+            ],
+            "query": "namespace,node,pod,container",
+            "type": "custom"
+          }
+        ]
+      },
+      "time": {
+        "from": "now-24h",
+        "to": "now"
+      },
+      "timepicker": {},
+      "timezone": "browser",
+      "title": "Kubernetes / Resource Drilldown",
+      "uid": "adcdntc",
+      "version": 2
+    }

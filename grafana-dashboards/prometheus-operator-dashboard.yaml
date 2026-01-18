@@ -1,0 +1,186 @@
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: prometheus-operator-dashboard
+  namespace: monitoring
+spec:
+  allowCrossNamespaceImport: true
+  folder: "General"
+  instanceSelector:
+    matchLabels:
+      grafana: dev
+  configMapRef:
+    name: prometheus-operator-dashboard
+    key: dashboard.json
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-operator-dashboard
+  namespace: monitoring
+data:
+  dashboard.json: |
+    {
+      "title": "Prometheus / Operator",
+      "uid": "prom-operator-internals",
+      "tags": ["prometheus-operator", "prometheus"],
+      "schemaVersion": 39,
+      "version": 1,
+      "editable": true,
+      "refresh": "30s",
+      "time": { "from": "now-6h", "to": "now" },
+      "description": "Operational view for Prometheus Operator and the Prometheus server it manages. Panels: build info, reconcile ops vs errors, selected resource counts, workqueue depth and latency (avg, p95). Use the variables to narrow by controller/namespace/job.",
+      "templating": {
+        "list": [
+          {
+            "name": "ds",
+            "type": "datasource",
+            "query": "prometheus",
+            "current": { "text": "Prometheus", "value": "Prometheus" }
+          },
+          {
+            "name": "job",
+            "type": "query",
+            "datasource": { "type": "prometheus", "uid": "${ds}" },
+            "query": "label_values(prometheus_operator_reconcile_operations_total, job)",
+            "includeAll": true,
+            "allValue": ".*",
+            "multi": true,
+            "current": { "text": "All", "value": ["$__all"] },
+            "refresh": 2
+          },
+          {
+            "name": "controller",
+            "type": "query",
+            "datasource": { "type": "prometheus", "uid": "${ds}" },
+            "query": "label_values(prometheus_operator_reconcile_operations_total{job=~\"${job:regex}\"}, controller)",
+            "includeAll": true,
+            "allValue": ".*",
+            "multi": true,
+            "current": { "text": "All", "value": ["$__all"] },
+            "refresh": 2
+          },
+          {
+            "name": "namespace",
+            "type": "query",
+            "datasource": { "type": "prometheus", "uid": "${ds}" },
+            "query": "label_values(prometheus_operator_managed_resources, namespace)",
+            "includeAll": true,
+            "allValue": ".*",
+            "multi": true,
+            "current": { "text": "All", "value": ["$__all"] },
+            "refresh": 2
+          }
+        ]
+      },
+      "panels": [
+        {
+          "type": "stat",
+          "title": "Operator build",
+          "description": "prometheus_operator_build_info exposes version metadata as labels. Value is 1. Read the text for version/commit. Interpretation: confirms which Operator build you run.",
+          "gridPos": { "x": 0, "y": 0, "w": 24, "h": 4 },
+          "datasource": { "type": "prometheus", "uid": "${ds}" },
+          "targets": [
+            {
+              "expr": "count by (goarch,goos,goversion,version, revision) (prometheus_operator_build_info{job=~\"${job:regex}\"})",
+              "legendFormat": "{{version}} ({{revision}}) {{goos}}/{{goarch}} {{goversion}}",
+              "refId": "A"
+            }
+          ],
+          "options": {
+            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+            "orientation": "horizontal",
+            "textMode": "name"
+          },
+          "fieldConfig": {
+            "defaults": { "unit": "none" },
+            "overrides": []
+          }
+        },
+        {
+          "type": "timeseries",
+          "title": "Reconcile operations vs errors (5m)",
+          "description": "Reconciliation loops run by the Operator per controller. ‘Operations’ is total reconcile attempts; ‘Errors’ is failures. Interpretation: Errors should stay near 0. Spikes indicate RBAC, API or spec issues.",
+          "gridPos": { "x": 0, "y": 4, "w": 24, "h": 8 },
+          "datasource": { "type": "prometheus", "uid": "${ds}" },
+          "targets": [
+            {
+              "expr": "sum by (controller) (increase(prometheus_operator_reconcile_operations_total{job=~\"${job:regex}\",controller=~\"${controller:regex}\"}[5m]))",
+              "legendFormat": "{{controller}} total",
+              "refId": "A"
+            },
+            {
+              "expr": "sum by (controller) (increase(prometheus_operator_reconcile_errors_total{job=~\"${job:regex}\",controller=~\"${controller:regex}\"}[5m]))",
+              "legendFormat": "{{controller}} errors",
+              "refId": "B"
+            }
+          ],
+          "fieldConfig": { "defaults": { "unit": "ops" }, "overrides": [] },
+          "options": { "legend": { "displayMode": "list", "placement": "right" } }
+        },
+        {
+          "type": "bargauge",
+          "title": "Managed resources selected (by resource/namespace)",
+          "description": "prometheus_operator_managed_resources counts objects the Operator tracks. Filtering state=\"selected\" shows resources selected by label/namespace selectors. Interpretation: verifies selection logic; sudden drops suggest selector or permission changes.",
+          "gridPos": { "x": 0, "y": 12, "w": 24, "h": 6 },
+          "datasource": { "type": "prometheus", "uid": "${ds}" },
+          "targets": [
+            {
+              "expr": "sum by (resource) (prometheus_operator_managed_resources{state=\"selected\", namespace=~\"${namespace:regex}\", job=~\"${job:regex}\"})",
+              "legendFormat": "{{resource}} {{namespace}}",
+              "refId": "A"
+            }
+          ],
+          "options": { "displayMode": "basic", "orientation": "horizontal" },
+          "fieldConfig": { "defaults": { "unit": "none" }, "overrides": [] }
+        },
+        {
+          "type": "timeseries",
+          "title": "Workqueue depth",
+          "description": "prometheus_operator_workqueue_depth is the current number of items waiting per queue. Interpretation: sustained growth indicates the Operator is falling behind on that controller.",
+          "gridPos": { "x": 0, "y": 18, "w": 24, "h": 8 },
+          "datasource": { "type": "prometheus", "uid": "${ds}" },
+          "targets": [
+            {
+              "expr": "sum by (name) (prometheus_operator_workqueue_depth{job=~\"${job:regex}\"})",
+              "legendFormat": "{{name}}",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": { "defaults": { "unit": "short" }, "overrides": [] },
+          "options": { "legend": { "displayMode": "list", "placement": "right" } }
+        },
+        {
+          "type": "timeseries",
+          "title": "Workqueue latency p95 (5m)",
+          "description": "Histogram p95 of time items spend in the workqueue until handled. Computed from prometheus_operator_workqueue_latency_seconds_bucket. Interpretation: rising p95 means bursts or slowdown in reconciliation.",
+          "gridPos": { "x": 0, "y": 26, "w": 12, "h": 8 },
+          "datasource": { "type": "prometheus", "uid": "${ds}" },
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.95, sum by (name, le) (rate(prometheus_operator_workqueue_latency_seconds_bucket{job=~\"${job:regex}\"}[5m])))",
+              "legendFormat": "{{name}} p95",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": { "defaults": { "unit": "s" }, "overrides": [] },
+          "options": { "legend": { "displayMode": "list", "placement": "right" } }
+        },
+        {
+          "type": "timeseries",
+          "title": "Workqueue latency avg (5m)",
+          "description": "Average latency derived from summary-like counters: sum(rate(..._sum[5m])) / sum(rate(..._count[5m])). Interpretation: baseline queue time; compare with p95 for tail behaviour.",
+          "gridPos": { "x": 12, "y": 26, "w": 12, "h": 8 },
+          "datasource": { "type": "prometheus", "uid": "${ds}" },
+          "targets": [
+            {
+              "expr": "sum by (name) (rate(prometheus_operator_workqueue_latency_seconds_sum{job=~\"${job:regex}\"}[5m])) / sum by (name) (rate(prometheus_operator_workqueue_latency_seconds_count{job=~\"${job:regex}\"}[5m]))",
+              "legendFormat": "{{name}} avg",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": { "defaults": { "unit": "s" }, "overrides": [] },
+          "options": { "legend": { "displayMode": "list", "placement": "right" } }
+        }
+      ]
+    }
