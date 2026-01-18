@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: old-cluster
-  namespace: kube-prometheus-stack
+  namespace: monitoring
 data:
   dashboard.json: |
     {
@@ -262,7 +262,7 @@ apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
   name: old-cluster
-  namespace: kube-prometheus-stack
+  namespace: monitoring
 spec:
   allowCrossNamespaceImport: true
   folder: "General"
