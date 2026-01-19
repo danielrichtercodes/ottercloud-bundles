@@ -7,7 +7,7 @@ spec:
   myASN: {{ .Values.bgp.myASN}}
   peerASN: {{ .Values.bgp.peerASN}}
   peerAddress: {{ .Values.bgp.peerAddress}}
-#  dualStackAddressFamily: true
+  dualStackAddressFamily: true
 ---
 apiVersion: metallb.io/v1beta1
 kind: BGPAdvertisement
