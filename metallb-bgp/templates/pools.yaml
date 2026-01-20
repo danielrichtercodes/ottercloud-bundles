@@ -1,25 +1,15 @@
+{{- range $pool := .Values.bgp.pools }}
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
-  name: static
+  name: {{ $pool.name | quote }}
   namespace: metallb-system
 spec:
   avoidBuggyIPs: true
-  autoAssign: false
+  autoAssign: {{ default false $pool.autoAssign }}
   addresses:
-    {{- range .Values.bgp.pools.static.addresses }}
-    - {{ . }}
+    {{- range $addr := $pool.addresses }}
+    - {{ $addr | quote }}
     {{- end }}
 ---
-apiVersion: metallb.io/v1beta1
-kind: IPAddressPool
-metadata:
-  name: dynamic
-  namespace: metallb-system
-spec:
-  avoidBuggyIPs: true
-  autoAssign: true
-  addresses:
-    {{- range .Values.bgp.pools.dynamic.addresses }}
-    - {{ . }}
-    {{- end }}
+{{- end }}

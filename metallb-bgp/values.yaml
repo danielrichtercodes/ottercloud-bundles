@@ -3,11 +3,12 @@ bgp:
   peerASN: 64520
   peerAddress: 192.168.178.1
   pools:
-    static:
+    - name: static
       addresses:
         - 192.168.210.0/24
-      #    - fd00:0:1::/48
-    dynamic:
+        - fd00:69:1::/64
+    - name: dynamic
+      autoAssign: true
       addresses:
         - 192.168.212.0/24
-      #    - fd00:0:2::/48
+        - fd00:69:8f3a::/64
