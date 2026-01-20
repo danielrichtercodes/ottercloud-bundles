@@ -1,7 +1,11 @@
 bgp:
-  myASN: 64522
-  peerASN: 64520
-  peerAddress: 192.168.178.1
+  peerings:
+    - name: vyos
+      myASN: 64522
+      peerASN: 64520
+      addresses:
+        - 192.168.178.1
+        - fd00::1
   pools:
     - name: static
       addresses:

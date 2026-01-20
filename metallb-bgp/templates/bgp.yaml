@@ -1,16 +1,21 @@
-apiVersion: metallb.io/v1beta2
-kind: BGPPeer
-metadata:
-  name: peer
-  namespace: metallb-system
-spec:
-  myASN: {{ .Values.bgp.myASN}}
-  peerASN: {{ .Values.bgp.peerASN}}
-  peerAddress: {{ .Values.bgp.peerAddress}}
-  dualStackAddressFamily: true
----
 apiVersion: metallb.io/v1beta1
 kind: BGPAdvertisement
 metadata:
   name: metallb
   namespace: metallb-system
+---
+{{- range $peering := .Values.bgp.peerings }}
+  {{- range $addr := $peering.addresses }}
+apiVersion: metallb.io/v1beta2
+kind: BGPPeer
+metadata:
+  name: {{ printf "%s-%s" $peering.name $addr | lower | replace ":" "-" | replace "." "-" | replace "/" "-" | trunc 63 | trimSuffix "-" | quote }}
+  namespace: metallb-system
+spec:
+  myASN: {{ $peering.myASN }}
+  peerASN: {{ $peering.peerASN }}
+  peerAddress: {{ $addr | quote }}
+  dualStackAddressFamily: true
+---
+  {{- end }}
+{{- end }}
