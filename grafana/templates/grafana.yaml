@@ -74,6 +74,7 @@ spec:
   #                claimName: grafana
   ingress:
     spec:
+      ingressClassName: "traefik"
       rules:
         - host: grafana.danielr1996.de
           http:
