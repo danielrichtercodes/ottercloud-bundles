@@ -2,49 +2,31 @@ apiVersion: velero.io/v1
 kind: Schedule
 metadata:
   name: gfs-daily-pv-pvc
+  namespace: velero
 spec:
   schedule: "0 2 * * *"
   template:
-    ttl: 336h # 14d
-    includedNamespaces:
-      - "*"
-    includedNamespaceScopedResources:
-      - persistentvolumeclaims
-    includedClusterScopedResources:
-      - persistentvolumes
-    excludedClusterScopedResources:
-      - namespaces
+    ttl: 336h
+{{ include "velero.schedule.policy.pv-pvc" . | indent 4 }}
 ---
 apiVersion: velero.io/v1
 kind: Schedule
 metadata:
   name: gfs-weekly-pv-pvc
+  namespace: velero
 spec:
-  schedule: "0 3 * * 0" # Sunday
+  schedule: "0 3 * * 0"
   template:
-    ttl: 1344h # 8w
-    includedNamespaces:
-      - "*"
-    includedNamespaceScopedResources:
-      - persistentvolumeclaims
-    includedClusterScopedResources:
-      - persistentvolumes
-    excludedClusterScopedResources:
-      - namespaces
+    ttl: 1344h
+{{ include "velero.schedule.policy.pv-pvc" . | indent 4 }}
 ---
 apiVersion: velero.io/v1
 kind: Schedule
 metadata:
   name: gfs-monthly-pv-pvc
+  namespace: velero
 spec:
-  schedule: "0 4 1 * *" # 1st day of month
+  schedule: "0 4 1 * *"
   template:
-    ttl: 8760h # ~365d
-    includedNamespaces:
-      - "*"
-    includedNamespaceScopedResources:
-      - persistentvolumeclaims
-    includedClusterScopedResources:
-      - persistentvolumes
-    excludedClusterScopedResources:
-      - namespaces
+    ttl: 8760h
+{{ include "velero.schedule.policy.pv-pvc" . | indent 4 }}
