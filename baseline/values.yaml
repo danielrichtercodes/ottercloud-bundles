@@ -1,6 +1,4 @@
 modules:
-  privilegedNamespaces:
-    namespaces: []
   imagePullSecret:
     registry: ghcr.io
     username:
