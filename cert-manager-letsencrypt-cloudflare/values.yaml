@@ -1,0 +1,4 @@
+cloudflare:
+  token:
+letsencrypt:
+  email: unused@example.com
