@@ -1,7 +1,7 @@
 apiVersion: velero.io/v1
 kind: Schedule
 metadata:
-  name: {{- if .Values.prefix }}{{ .Values.prefix }}-{{ end }}gfs-daily
+  name: {{ include "backup.name" . }}-daily
   namespace: velero
 spec:
   schedule: "0 2 * * *"
@@ -12,7 +12,7 @@ spec:
 apiVersion: velero.io/v1
 kind: Schedule
 metadata:
-  name: {{- if .Values.prefix }}{{ .Values.prefix }}-{{ end }}gfs-weekly
+  name:  {{ include "backup.name" . }}-weekly
   namespace: velero
 spec:
   schedule: "0 3 * * 0"
@@ -23,7 +23,7 @@ spec:
 apiVersion: velero.io/v1
 kind: Schedule
 metadata:
-  name: {{- if .Values.prefix }}{{ .Values.prefix }}-{{ end }}gfs-monthly
+  name:  {{ include "backup.name" . }}-monthly
   namespace: velero
 spec:
   schedule: "0 4 1 * *"

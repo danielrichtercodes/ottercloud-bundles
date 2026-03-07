@@ -10,3 +10,11 @@ includedNamespaceScopedResources:
 includedClusterScopedResources:
   - persistentvolumes
 {{- end }}
+
+{{- define "backup.name" -}}
+{{- if .Values.prefix -}}
+{{ printf "%s-gfs" .Values.prefix }}
+{{- else -}}
+gfs
+{{- end -}}
+{{- end -}}
