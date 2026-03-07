@@ -1,0 +1,20 @@
+repositories:
+  - name: jellyfin
+    url: https://jellyfin.github.io/jellyfin-helm
+  - name: ghcr.io
+    url: ghcr.io
+    oci: true
+releases:
+  - name: jellyfin-pvc
+    namespace: jellyfin
+    chart: ghcr.io/danielr1996/helm-extra-deploy/helm-extra-deploy
+    version: 1.0.0
+    values: [ pvc.yaml ]
+    installed: false
+  - name: jellyfin
+    namespace: jellyfin
+#    chart: ../../../../jellyfin-helm/charts/jellyfin
+    chart: jellyfin/jellyfin
+    version: 2.3.0
+    values: [values.yaml]
+    installed: false

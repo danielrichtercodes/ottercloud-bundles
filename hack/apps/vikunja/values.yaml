@@ -1,0 +1,62 @@
+vikunja:
+  ingress:
+    main:
+      hosts:
+        - host: todo.apps.dani.rip
+          paths:
+            - path: /
+      tls:
+        - secretName: todo.apps.dani.rip
+          hosts: [todo.apps.dani.rip]
+#  configMaps:
+#    api-config:
+#      enabled: true
+#      data:
+#        config.yml: |
+#          typesense:
+#            # These configuration values will automatically apply
+#            # if the integrated Typesense is enabled below (typesense.enabled)
+#            url: "http://{{ printf "%s-typesense" .Release.Name }}:8108"
+#            apiKey: "{{ .Values.typesense.env.TYPESENSE_API_KEY }}"
+#          redis:
+#            # These configuration values will automatically apply
+#            # if the integrated Redis is enabled below (redis.enabled)
+#            host: "{{ printf "%s-redis-master" .Release.Name }}:6379"
+#            db: "{{ .Release.Name }}"
+  env:
+    VIKUNJA_DATABASE_TYPE: "postgres"
+    VIKUNJA_DATABASE_HOST: "vikunja-db-cluster-rw"
+    VIKUNJA_DATABASE_USER: "vikunja"
+    VIKUNJA_DATABASE_PASSWORD: "zTvz7Qvz8JhVxJ5jzzCk1mKI3jerMHPHz3B92nTOi3JPWmdECdOxQDCjFubiGE2E"
+    VIKUNJA_DATABASE_DATABASE: "vikunja"
+postgresql:
+  image:
+    repository: postgres
+    tag: 17.6
+#  enabled: false
+#additionalObjects:
+#  - kind: "postgresql"
+#    apiVersion: "acid.zalan.do/v1"
+#    metadata:
+#      name: "vikunja-db"
+#    spec:
+#      teamId: "acid"
+#      enableMasterLoadBalancer: true
+#      masterServiceAnnotations:
+#        "coredns.io/hostname": "postgres.infra.dani.rip"
+#      postgresql:
+#        version: "17"
+#      numberOfInstances: 1
+#      volume:
+#        size: "10Gi"
+#      users:
+#        vikunja: []
+#      databases:
+#        vikunja: vikunja
+#      resources:
+#        requests:
+#          cpu: 100m
+#          memory: 100Mi
+#        limits:
+#          cpu: 500m
+#          memory: 500Mi

@@ -1,0 +1,11 @@
+ingress:
+  enabled: true
+  hosts:
+    - host: homey.danielr1996.de
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+    - secretName: chart-example-tls
+      hosts:
+        - homey.danielr1996.de

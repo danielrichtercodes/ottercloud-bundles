@@ -1,0 +1,11 @@
+ingress:
+  enabled: true
+  hosts:
+    - host: bentopdf.apps.dani.rip
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+    - secretName: bentopdf.apps.dani.rip
+      hosts:
+        - bentopdf.apps.dani.rip

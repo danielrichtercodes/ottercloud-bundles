@@ -1,0 +1,107 @@
+image:
+  repository: danielr1996/netbox-aio
+  tag: "v4.3-3.3.0-2"
+#extraDeploy: []
+superuser:
+  name: admin
+  email: me@danielrichter.codes
+  password: "admin"
+  apiToken: "7fd7cb11c578775370291a67f69b526e292cc59e"
+ingress:
+  enabled: true
+  hosts:
+    - host: netbox.danielr1996.de
+      paths:
+        - /
+  tls:
+    - secretName: netbox.danielr1996.de
+      hosts:
+        - netbox.danielr1996.de
+postgresql:
+  auth:
+    password: netbox
+  primary:
+    extraVolumeMounts:
+      - name: backup
+        mountPath: "/pgbackup"
+    extraVolumes:
+      - name: backup
+        persistentVolumeClaim:
+          claimName: pgbackup
+valkey:
+  architecture: standalone
+  auth:
+    password: "valkey"
+# This is a list of valid fully-qualified domain names (FQDNs) for the NetBox
+# server. NetBox will not permit write access to the server via any other
+# hostnames. The first FQDN in the list will be treated as the preferred name.
+#allowedHosts:
+#  - "*"
+
+# Include Pod IP in list of allowed hosts by providing it as the 'POD_IP' envvar
+# at runtime, which is then used in the configuration.py.
+#allowedHostsIncludesPodIP: true
+
+# Specify one or more name and email address tuples representing NetBox
+# administrators. These people will be notified of application errors (assuming
+# correct email settings are provided).
+# admins:
+#   - ['John Doe', 'jdoe@example.com']
+#admins: []
+
+# API Cross-Origin Resource Sharing (CORS) settings. If originAllowAll
+# is set to true, all origins will be allowed. Otherwise, define a list of
+# allowed origins using either originWhitelist or originRegexWhitelist. For
+# more information, see https://github.com/ottoyiu/django-cors-headers
+#cors:
+#  originAllowAll: false
+#  originWhitelist: []
+#  originRegexWhitelist: []
+  #  - '^(https?://)?(\w+\.)?example\.com$'
+
+# CSRF settings.  Needed for netbox v3.2.0 and newer. For more information
+# see https://netboxlabs.com/docs/netbox/en/stable/configuration/security/#csrf_trusted_origins
+#csrf:
+  # The name of the cookie to use for the cross-site request forgery (CSRF)
+  # authentication token.
+#  cookieName: csrftoken
+  # Defines a list of trusted origins for unsafe (e.g. POST) requests. This is
+  # a pass-through to Django's CSRF_TRUSTED_ORIGINS setting. Note that each
+  # host listed must specify a scheme (e.g. http:// or `https://).
+#  trustedOrigins: []
+# Enable installed plugins. Add the name of each plugin to the list.
+#plugins: []
+
+# Plugins configuration settings. These settings are used by various plugins
+# that the user may have installed. Each key in the dictionary is the name of
+# an installed plugin and its value is a dictionary of settings.
+#pluginsConfig: {}
+#persistence:
+#  enabled: true
+  ## Data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+#  storageClass: ""
+#  subPath: ""
+#  accessMode: ReadWriteOnce
+#  size: 1Gi
+#  existingClaim: ""
+#  annotations: {}
+#resourcesPreset: "medium"
+#resources: {}
+#init:
+#  resourcesPreset: "nano"
+#  resources: {}
+#test:
+#  resources: {}
+#housekeeping:
+#  resourcesPreset: "none"
+#  resources: {}
+#worker:
+#    resourcesPreset: "nano"
+#    resources: {}
+

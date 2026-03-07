@@ -1,0 +1,20 @@
+services:
+  minio:
+    image: quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z
+    container_name: minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: password
+      MINIO_SERVER_URL: https://s3.danielr1996.de
+      MINIO_BROWSER_REDIRECT_URL: https://minio.danielr1996.de
+    networks: [nginx-proxy-manager]
+    ports:
+      - '9000'
+      - '9001'
+    volumes:
+      - /mnt/chungus/apps/minio:/data
+networks:
+  nginx-proxy-manager:
+    external: true

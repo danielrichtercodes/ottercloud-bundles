@@ -1,0 +1,101 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: restic-exporter
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: restic-exporter
+  namespace: restic-exporter
+  labels:
+    app: restic-exporter
+spec:
+  selector:
+    matchLabels:
+      app: restic-exporter
+  template:
+    metadata:
+      labels:
+        app: restic-exporter
+    spec:
+      containers:
+        - name: restic-exporter
+          image: ngosang/restic-exporter:1.7.0
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+#            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+          ports:
+            - name: metrics
+              containerPort: 8001
+              protocol: TCP
+          env:
+            - name: RESTIC_REPOSITORY
+#              value: s3:s3.eu-central-003.backblazeb2.com/danielrichtercodes-minecraft
+              value: s3:s3.us-west-004.backblazeb2.com/skynet-mc-backup
+            - name: RESTIC_PASSWORD
+              value: >-
+                mTuWXVzsEdVJtm7gC8qbeCXdnrTQ6oTVCCjy96bAZqANMt7TZWybStyNHFupVVBQY3QyBpH4
+            - name: AWS_ACCESS_KEY_ID
+#              value: 0031b5051e71cf2000000000e
+              value: 0042a4ce0ece8c00000000022
+            - name: AWS_SECRET_ACCESS_KEY
+#              value: K003GseOJ0dBmcwEFmOv/k8xu2jeA/A
+              value: K004/tT0JvTRyZa+RmKZDXqPqnhJAK8
+            - name: INCLUDE_PATH
+              value: 'true'
+            - name: REFRESH_INTERVAL
+              value: '1800'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: restic-exporter
+  namespace: restic-exporter
+  labels:
+    app: restic-exporter
+spec:
+  ports:
+    - name: metrics
+      protocol: TCP
+      port: 8001
+      targetPort: metrics
+  selector:
+    app: restic-exporter
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    release: kube-prometheus-stack
+  name: restic-exporter
+  namespace: restic-exporter
+spec:
+  endpoints:
+    - port: metrics
+  selector:
+    matchLabels:
+      app: restic-exporter
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: restic-exporter
+  namespace: restic-exporter
+spec:
+  allowCrossNamespaceImport: true
+  datasources:
+    - datasourceName: prometheus
+      inputName: DS_PROMETHEUS
+  folder: Backups
+  grafanaCom:
+    id: 17554
+  instanceSelector:
+    matchLabels:
+      grafana: dev
+  resyncPeriod: 5m

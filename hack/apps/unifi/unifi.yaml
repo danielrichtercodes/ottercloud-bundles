@@ -1,0 +1,8 @@
+network:
+  multus:
+    enabled: true
+    address: 192.168.178.5/24
+    gateway: 192.168.178.1
+    interface: ens18
+unifi:
+  domain: unifi.danielr1996.de

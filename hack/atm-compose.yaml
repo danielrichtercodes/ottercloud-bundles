@@ -1,0 +1,38 @@
+services:
+  minecraft:
+    restart: unless-stopped
+    image: itzg/minecraft-server:2024.7.0-java21-graalvm
+    environment:
+      #CF_API_KEY: "$$2a$$10$$zmXRVJVznSDTagKut68GsucpkKfJU92.oPk5sILadL5EG0lQKF/aa"
+      CF_API_KEY: "$$2a$$10$$5SiXe6Sm7xixJwe5HdPGLeYKovVBSsQahBFD9butvXZioW2OKxRsm"
+      CF_SLUG: all-the-mods-10
+      CF_FILENAME_MATCHER: 10-0.12
+      USE_AIKAR_FLAGS: true
+      MOD_PLATFORM: AUTO_CURSEFORGE
+      EULA: true
+      VERSION: 1.21
+      MEMORY: 6G
+      CF_FORCE_REINSTALL_MODLOADER: true
+      OPS: |
+        Bla3ce
+    ports:
+      - 25565:25565
+    volumes:
+      - ./data:/data
+  backup:
+    image: itzg/mc-backup
+    depends_on:
+      minecraft:
+        condition: service_healthy
+    environment:
+      RCON_HOST: minecraft
+      BACKUP_METHOD: restic
+      INITIAL_DELAY: 10
+      RESTIC_HOSTNAME: atm
+      RESTIC_REPOSITORY: s3:s3.us-west-004.backblazeb2.com/skynet-mc-backup
+      RESTIC_PASSWORD: mTuWXVzsEdVJtm7gC8qbeCXdnrTQ6oTVCCjy96bAZqANMt7TZWybStyNHFupVVBQY3QyBpH4
+      AWS_ACCESS_KEY_ID: 0042a4ce0ece8c00000000022
+      AWS_SECRET_ACCESS_KEY: K004/tT0JvTRyZa+RmKZDXqPqnhJAK8
+      PRUNE_RESTIC_RETENTION: "--keep-daily 7 --keep-weekly 5 --keep-monthly 12"
+    volumes:
+      - ./data:/data:ro

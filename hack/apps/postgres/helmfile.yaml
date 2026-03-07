@@ -1,0 +1,19 @@
+repositories:
+  - name:  postgres-operator-ui
+    url: https://opensource.zalando.com/postgres-operator/charts/postgres-operator-ui
+  - name:  postgres-operator
+    url: https://opensource.zalando.com/postgres-operator/charts/postgres-operator
+releases:
+  - name: postgres-operator
+    namespace: postgres
+    chart: postgres-operator/postgres-operator
+    version: 1.14.0
+    values: [values-operator.yaml]
+  - name: postgres-operator-ui
+    namespace: postgres
+    chart: postgres-operator-ui/postgres-operator-ui
+    version: 1.14.0
+    values: [values-ui.yaml]
+  - name: postgresql-extras
+    namespace: postgres
+    chart: ./kustomize

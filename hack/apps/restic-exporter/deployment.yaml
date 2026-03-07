@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: restic-exporter
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: restic-exporter
+  namespace: restic-exporter
+  labels:
+    app: restic-exporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: restic-exporter
+  template:
+    metadata:
+      labels:
+        app: restic-exporter
+    spec:
+      containers:
+        - name: restic-exporter
+          image: ngosang/restic-exporter:1.6.0
+          env:
+            - name: RESTIC_REPOSITORY
+              value: "s3:s3.us-west-004.backblazeb2.com/skynet-mc-backup"
+            - name: RESTIC_PASSWORD
+              value: "mTuWXVzsEdVJtm7gC8qbeCXdnrTQ6oTVCCjy96bAZqANMt7TZWybStyNHFupVVBQY3QyBpH4"
+            - name: AWS_ACCESS_KEY_ID
+              value: "0042a4ce0ece8c00000000022"
+            - name: AWS_SECRET_ACCESS_KEY
+              value: "K004/tT0JvTRyZa+RmKZDXqPqnhJAK8"
+            - name: INCLUDE_PATH
+              value: "true"
+            - name: REFRESH_INTERVAL
+              value: "1800" # 30 min
+          ports:
+            - name: metrics
+              containerPort: 8001
+

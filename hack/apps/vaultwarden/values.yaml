@@ -1,0 +1,78 @@
+resourceType: "StatefulSet"
+fullnameOverride: vaultwarden
+extraObjects:
+  - apiVersion: acid.zalan.do/v1
+    kind: postgresql
+    metadata:
+      name: postgresql
+      annotations:
+        helm.sh/resource-policy: keep
+    spec:
+      databases:
+        vaultwarden: vaultwarden
+      numberOfInstances: 1
+      postgresql:
+        version: '16'
+      resources:
+        limits:
+          cpu: 500m
+          memory: 500Mi
+        requests:
+          cpu: 100m
+          memory: 100Mi
+      teamId: acid
+      users:
+        vaultwarden: []
+      volume:
+        size: 10Gi
+storage:
+  data:
+    name: "vaultwarden-data"
+    size: "15Gi"
+    accessMode: "ReadWriteOnce"
+  attachments:
+     name: "vaultwarden-files"
+     size: "10Gi"
+     accessMode: "ReadWriteOnce"
+webVaultEnabled: "true"
+database:
+  type: "postgresql"
+  host: "postgresql"
+  port: "5432"
+  existingSecret: "vaultwarden.postgresql.credentials.postgresql.acid.zalan.do"
+  dbName: "vaultwarden"
+pushNotifications:
+  enabled: true
+  installationId:
+    value: "df8c591c-f3fd-475d-807f-b1a30146b967"
+  installationKey:
+    value: "L6mPhNBqvuyczsiIxdea"
+domain: "https://vaultwarden.dani.rip"
+sendsAllowed: "true"
+orgAttachmentLimit: "0"
+userAttachmentLimit: "0"
+userSendLimit: "0"
+signupsAllowed: false
+invitationsAllowed: false
+experimentalClientFeatureFlags: fido2-vault-credentials,browser-fileless-import,autofill-v2
+adminToken:
+  # https://argon2.online/
+  value: "$argon2id$v=19$m=19456,t=2,p=1$azFTcGk4c0F0M1FmTzBlUg$6yqQ87rnEoRgwA" #sqNKzBPPPrQ33xEEDbEUi4tzanNF4WrBf5ybM44cZEAnfiGfgTsLUoxDaUYC7CFiKYZTNWoD
+timeZone: "Europe/Berlin"
+smtp:
+  fromName: "admin@danielrichter.codes"
+  from: "admin@danielrichter.codes"
+  host: "smtp.ionos.de"
+  security: "force_tls"
+  port: 465
+  username:
+    value: "admin@danielrichter.codes"
+  password:
+    value: "0lzBWJWDOrVw584zVGTOrAgrdXBgJ8y7jVaJr6ZI"
+ingress:
+  enabled: true
+  nginxIngressAnnotations: false
+  class: ""
+  tls: true
+  hostname: "vaultwarden.dani.rip"
+  tlsSecret: "vaultwarden.dani.rip"

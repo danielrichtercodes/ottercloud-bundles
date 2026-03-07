@@ -1,0 +1,12 @@
+extraDeploy:
+  - apiVersion: externaldns.k8s.io/v1alpha1
+    kind: DNSEndpoint
+    metadata:
+      name: unifi.danielr1996.de
+    spec:
+      endpoints:
+        - dnsName: unifi.danielr1996.de
+          recordTTL: 300
+          recordType: A
+          targets:
+            - 192.168.178.5

@@ -1,0 +1,14 @@
+envs:
+  appUrl: https://postgres.kube-dev.infra.dani.rip
+  operatorApiUrl: http://postgres-operator:8080
+  targetNamespace: "*"
+ingress:
+  enabled: true
+  hosts:
+    - host: postgres.kube-dev.infra.dani.rip
+      paths:
+        - /
+  tls:
+    - secretName: postgres.kube-dev.infra.dani.rip
+      hosts:
+        - postgres.kube-dev.infra.dani.rip

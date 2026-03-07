@@ -1,0 +1,18 @@
+repositories:
+  - name: ghcr.io
+    url: ghcr.io
+    oci: true
+releases:
+  - name: unifi
+    namespace: unifi
+    chart: ../../../../upstream/unifi
+    values: [unifi.yaml]
+  - name: mongodb
+    namespace: unifi
+    chart: ../../../../upstream/mongodb
+    values: [mongodb.yaml]
+  - name: unifi-dns
+    namespace: unifi
+    chart: ghcr.io/danielr1996/helm-extra-deploy/helm-extra-deploy
+    version: 1.0.0
+    values: [ dns.yaml ]

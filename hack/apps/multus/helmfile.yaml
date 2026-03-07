@@ -1,0 +1,5 @@
+releases:
+  - name: multus
+    namespace: kube-system
+    chart: ../../../upstreams/multus
+    wait: true

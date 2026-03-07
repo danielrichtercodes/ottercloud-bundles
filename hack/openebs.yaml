@@ -1,0 +1,19 @@
+engines:
+  replicated:
+    mayastor:
+      enabled: false
+  local:
+    lvm:
+      enabled: false
+    zfs:
+      enabled: false
+loki:
+  enabled: false
+alloy:
+  enabled: false
+localpv-provisioner:
+  localpv:
+    basePath: "/var/mnt/openebs-local"
+  hostpathClass:
+    isDefaultClass: true
+    reclaimPolicy: Delete

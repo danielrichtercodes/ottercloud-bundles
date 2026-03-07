@@ -1,0 +1,12 @@
+repositories:
+  - name: ghcr.io
+    url: ghcr.io
+    oci: true
+releases:
+  - name: copyparty
+    namespace: copyparty
+    chart: ghcr.io/danielr1996/copyparty
+#    chart: ../../../copyparty-helm
+    version: 0.5.1
+    values: [values.yaml]
+    installed: false

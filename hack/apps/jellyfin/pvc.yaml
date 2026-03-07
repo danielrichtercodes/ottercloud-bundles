@@ -1,0 +1,52 @@
+extraDeploy:
+- apiVersion: v1
+  kind: Secret
+  metadata:
+    name: smb-media-credentials
+  stringData:
+    username: "danie"
+    password: "Reichenschwand5"
+- apiVersion: v1
+  kind: PersistentVolume
+  metadata:
+    name: jellyfin-media
+    annotations:
+      pv.kubernetes.io/provisioned-by: smb.csi.k8s.io
+  spec:
+    capacity:
+      storage: 1Gi
+    accessModes:
+      - ReadWriteOnce
+    persistentVolumeReclaimPolicy: Retain
+  #  storageClassName: smb
+    mountOptions:
+      - dir_mode=0777
+      - file_mode=0777
+      - uid=1001
+      - gid=1001
+      - noperm
+      - mfsymlinks
+      - cache=strict
+      - noserverino  # required to prevent data corruption
+    csi:
+      driver: smb.csi.k8s.io
+      # volumeHandle format: {smb-server-address}#{sub-dir-name}#{share-name}
+      # make sure this value is unique for every share in the cluster
+      volumeHandle: jellyfin-truenas.danielr1996.de#media
+      volumeAttributes:
+        source: //truenas.danielr1996.de/media
+      nodeStageSecretRef:
+        name: smb-media-credentials
+        namespace: jellyfin
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    name: jellyfin-media
+  spec:
+    storageClassName: ""
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 1Gi
+    volumeName: jellyfin-media

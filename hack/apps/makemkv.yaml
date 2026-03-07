@@ -1,0 +1,21 @@
+services:
+  makemkv:
+    image: jlesage/makemkv:v25.10.1
+    container_name: makemkv
+    restart: unless-stopped
+    #    environment:
+    #      ARM_UID: 3002
+    #      ARM_GID: 3002
+    networks: [nginx-proxy-manager]
+    ports:
+      - 5800
+    volumes:
+      - /mnt/chungus/apps/makemkv/output:/output
+    devices:
+      - "/dev/sr0:/dev/sr0"
+      - "/dev/sg5:/dev/sg5"
+    cap_add:
+      - SYS_ADMIN
+networks:
+  nginx-proxy-manager:
+    external: true

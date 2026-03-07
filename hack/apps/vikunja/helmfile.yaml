@@ -1,0 +1,18 @@
+repositories:
+  - name: cnpg
+    url: https://cloudnative-pg.github.io/charts
+  - name: ghcr.io
+    url: ghcr.io
+    oci: true
+releases:
+  - name: vikunja
+    namespace: vikunja
+    chart: ghcr.io/go-vikunja/helm-chart/vikunja
+    version: 1.1.0
+    values: [values.yaml]
+  - name: vikunja-db
+    namespace: vikunja
+    chart: cnpg/cluster
+    version: 0.3.1
+    values: [values.yaml]
+

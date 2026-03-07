@@ -1,0 +1,25 @@
+services:
+  tryton:
+    image: tryton/tryton:7.0
+    container_name: tryton
+    environment:
+      # DB settings for Tryton
+      TRYTOND_DATABASE_URI: postgresql://tryton:9IbFGnd7xqfPk3@db.danielr1996.de:5432/
+      TRYTOND_DATABASE_NAME: tryton
+    networks: [nginx-proxy-manager]
+    ports:
+      - "8000"
+networks:
+  nginx-proxy-manager:
+    external: true
+  #   command: >
+  #     sh -c "
+  #       echo 'Initializing Tryton database...' &&
+  #       trytond-admin -c /etc/trytond.conf -d ${TRYTOND_DATABASE_NAME} --all &&
+  #       echo 'Starting Tryton server...' &&
+  #       trytond -c /etc/trytond.conf
+  #     "
+#    volumes:
+#      # Optional: persist config and files if you want to tweak later
+#      - tryton-config:/etc/trytond
+#      - tryton-data:/var/lib/trytond

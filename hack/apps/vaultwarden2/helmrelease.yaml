@@ -1,0 +1,75 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: vaultwarden
+  namespace: vaultwarden
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: danielr1996/vaultwarden
+      version: 0.24.3
+      sourceRef:
+        kind: HelmRepository
+        name: ghcr.io
+        namespace: flux-system
+  releaseName: vaultwarden
+  values:
+    image:
+      repository: vaultwarden/server
+      tag: "1.32.5"
+      extraVars:
+    fullnameOverride: vaultwarden
+    resourceType: "StatefulSet"
+    resources:
+      limits:
+        memory: 512Mi
+      requests:
+        cpu: 10m
+        memory: 512Mi
+    data:
+      name: "vaultwarden-data"
+      size: "40Gi"
+    database:
+      type: "postgresql"
+      host: "postgresql"
+      port: "5432"
+      existingSecret: "vaultwarden.postgresql.credentials.postgresql.acid.zalan.do"
+      dbName: "vaultwarden"
+    orgAttachmentLimit: "0"
+    userAttachmentLimit: "0"
+    orgCreationUsers: "me@danielrichter.codes"
+    smtp:
+      fromName: "admin@danielrichter.codes"
+      from: "admin@danielrichter.codes"
+      host: "smtp.ionos.de"
+      security: "force_tls"
+      port: 465
+      username:
+        value: "admin@danielrichter.codes"
+      password:
+        value: "0lzBWJWDOrVw584zVGTOrAgrdXBgJ8y7jVaJr6ZI"
+    pushNotifications:
+      installationId: "df8c591c-f3fd-475d-807f-b1a30146b967"
+      installationKey: "L6mPhNBqvuyczsiIxdea"
+      relayUri: "https://api.bitwarden.eu"
+      identityUri: "https://identity.bitwarden.eu"
+    domain: "https://vaultwarden.danielrichter.codes"
+    signupsAllowed: "false"
+    signupsVerify: "true"
+    #    signupDomains: "danielrichter.codes"
+    invitationsAllowed: false
+    invitationOrgName: "Vaultwarden"
+    experimentalClientFeatureFlags: fido2-vault-credentials,browser-fileless-import,autofill-v2
+    adminToken:
+      # https://argon2.online/
+      value: "$argon2id$v=19$m=19456,t=2,p=1$azFTcGk4c0F0M1FmTzBlUg$6yqQ87rnEoRgwA" #sqNKzBPPPrQ33xEEDbEUi4tzanNF4WrBf5ybM44cZEAnfiGfgTsLUoxDaUYC7CFiKYZTNWoD
+    ingress:
+      enabled: true
+      nginxIngressAnnotations: false
+      additionalAnnotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+      tls: true
+      hostname: "vaultwarden.nitrogen.danielrichter.codes"
+      additionalHostnames: [ vaultwarden.danielrichter.codes ]
+      tlsSecret: "vaultwarden.nitrogen.danielrichter.codes"

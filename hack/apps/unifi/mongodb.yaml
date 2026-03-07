@@ -1,0 +1,4 @@
+mongodb:
+  user: unifi
+  password: unifi
+  db: unifi

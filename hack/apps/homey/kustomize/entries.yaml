@@ -1,0 +1,39 @@
+apiVersion: linkbee.danielrichter.codes/v1alpha
+kind: DashboardEntry
+metadata:
+  name: openfahrplan.danielrichter.codes
+spec:
+  title: OpenFahrplan
+  url: https://openfahrplan.danielrichter.codes
+---
+apiVersion: linkbee.danielrichter.codes/v1alpha
+kind: DashboardEntry
+metadata:
+  name: nat64.danielrichter.codes
+spec:
+  title: NAT64
+  url: https://nat64.danielrichter.codes
+---
+apiVersion: linkbee.danielrichter.codes/v1alpha
+kind: DashboardEntry
+metadata:
+  name: backofenverein-reichenschwand.de
+spec:
+  title: Backofenverein Reichenschwand
+  url: https://backofenverein-reichenschwand.de
+---
+apiVersion: linkbee.danielrichter.codes/v1alpha
+kind: DashboardEntry
+metadata:
+  name: monitoring.freifunk-franken.de
+spec:
+  title: Freifunk Franken
+  url: https://monitoring.freifunk-franken.de/routers/19790
+---
+apiVersion: linkbee.danielrichter.codes/v1alpha
+kind: DashboardEntry
+metadata:
+  name: vaultwarden.danielrichter.codes
+spec:
+  title: Vaultwarden
+  url: https://vaultwarden.danielrichter.codes

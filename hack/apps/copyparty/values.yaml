@@ -1,0 +1,25 @@
+#service:
+#  type: LoadBalancer
+storage:
+#  storageClass: rwo
+  size: 10Gi
+  accessModes:
+    - ReadWriteOnce
+#  restoreFrom:
+#    name: "new-snapshot-test"
+#  existingPvc: "copyparty-data"
+#arguments: ["--smb"]
+copyparty:
+  accounts: []
+#existingConfigMap: "config"
+ingress:
+  enabled: true
+  hosts:
+    - host: copyparty.danielr1996.de
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+    - secretName: copyparty.danielr1996.de
+      hosts:
+        - copyparty.danielr1996.de

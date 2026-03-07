@@ -1,0 +1,25 @@
+{{ if .Values.network.multus.enabled }}
+apiVersion: k8s.cni.cncf.io/v1
+kind: NetworkAttachmentDefinition
+metadata:
+  name: {{ include "chart.fullname" . }}
+  labels:
+    {{- include "chart.labels" . | nindent 4 }}
+spec:
+  config: |
+    {
+      "cniVersion": "1.0.0",
+      "type": "macvlan",
+      "mode": "bridge",
+      "master": "{{.Values.network.multus.interface}}",
+      "ipam": {
+        "type": "static",
+        "addresses": [
+          {
+            "address": "{{.Values.network.multus.address}}",
+            "gateway": "{{.Values.network.multus.gateway}}"
+          }
+        ]
+      }
+    }
+{{end}}

@@ -1,0 +1,5 @@
+releases:
+  - name: bentopdf
+    namespace: bentopdf
+    chart: ../../upstreams/bentopdf
+    values: [values.yaml]

@@ -1,0 +1,36 @@
+ingress:
+  enabled: true
+  hosts:
+    - host: jellyfin.seed.danielr1996.de
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+    - secretName: jellyfin.seed.danielr1996.de
+      hosts:
+        - jellyfin.seed.danielr1996.de
+#resources:
+#  limits:
+#    cpu: 100m
+#    memory: 128Mi
+#  requests:
+#    cpu: 1
+#    memory: 500Mi
+volumes: []
+# - name: foo
+#   secret:
+#     secretName: mysecret
+#     optional: false
+
+# -- Additional volume mounts for the Jellyfin container.
+volumeMounts: []
+# - name: foo
+#   mountPath: "/etc/foo"
+#   readOnly: true
+jellyfin:
+  # -- Enable DLNA. Requires host network. See: https://jellyfin.org/docs/general/networking/dlna.html
+  enableDLNA: false
+persistence:
+  media:
+    enabled: true
+    existingClaim: 'jellyfin-media'

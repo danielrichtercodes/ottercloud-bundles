@@ -1,0 +1,12 @@
+repositories:
+  - name: ghcr.io
+    url: ghcr.io
+    oci: true
+releases:
+  - name: homey
+    namespace: homey
+    chart: ../../../homey/chart
+    values: [values.yaml]
+  - name: homey-entries
+    namespace: homey
+    chart: ./kustomize

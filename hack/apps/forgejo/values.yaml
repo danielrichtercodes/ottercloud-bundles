@@ -1,0 +1,16 @@
+gitea:
+  admin:
+    username: 'dani'
+    password: 'EV6qMjqYFPp9hzXdqePk'
+    email: 'admin@danielrichter.codes'
+ingress:
+  enabled: true
+  hosts:
+    - host: git.dev.danielr1996.de
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: git.dev.danielr1996.de
+      hosts:
+        - git.dev.danielr1996.de

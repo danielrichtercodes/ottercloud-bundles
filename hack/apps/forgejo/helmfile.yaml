@@ -1,0 +1,11 @@
+repositories:
+  - name: forgejo
+    url: code.forgejo.org/forgejo-helm
+    oci: true
+releases:
+  - name: forgejo
+    namespace: forgejo
+    chart: forgejo/forgejo
+    version: 13.0.1
+    values: [values.yaml]
+    installed: false

@@ -1,0 +1,4 @@
+helmDefaults:
+  atomic: true
+helmfiles:
+  - "*/helmfile.yaml"

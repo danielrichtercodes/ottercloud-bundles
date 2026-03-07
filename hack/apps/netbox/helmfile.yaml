@@ -1,0 +1,17 @@
+repositories:
+  - name: ghcr.io
+    url: ghcr.io
+    oci: true
+releases:
+  - name: pgbackup-pvc
+    namespace: netbox
+    chart: ghcr.io/danielr1996/helm-extra-deploy/helm-extra-deploy
+    version: 1.0.0
+    values: [ pvc.yaml ]
+    installed: false
+  - name: netbox
+    namespace: netbox
+    chart: ghcr.io/netbox-community/netbox-chart/netbox
+    version: 7.1.11
+    values: [values.yaml]
+    installed: false

@@ -1,0 +1,27 @@
+apiVersion: acid.zalan.do/v1
+kind: postgresql
+metadata:
+  name: postgresql
+  namespace: vaultwarden
+spec:
+  clone:
+    cluster: vaultwarden-postgresql
+    timestamp: "9999-12-31T23:59:59+00:00"
+#      timestamp: "2024-07-10T01:48:13+00:00"
+  databases:
+    vaultwarden: vaultwarden
+  numberOfInstances: 1
+  postgresql:
+    version: '16'
+  resources:
+    limits:
+      cpu: 500m
+      memory: 500Mi
+    requests:
+      cpu: 100m
+      memory: 100Mi
+  teamId: acid
+  users:
+    vaultwarden: []
+  volume:
+    size: 10Gi

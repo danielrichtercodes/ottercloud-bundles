@@ -1,0 +1,12 @@
+
+ingress:
+  enabled: true
+  hosts:
+    - host: headlamp.infra.dani.rip
+      paths:
+        - path: /
+          type: ImplementationSpecific
+  tls:
+    - secretName: headlamp.infra.dani.rip
+      hosts:
+        - headlamp.infra.dani.rip

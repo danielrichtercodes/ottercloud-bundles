@@ -1,0 +1,17 @@
+#cloud-config
+timezone: Europe/Berlin
+password: ubuntu
+chpasswd:
+  expire: false
+users:
+  - default
+package_update: true
+packages:
+  - qemu-guest-agent
+  - net-tools
+  - curl
+runcmd:
+  - ufw default deny
+  - ufw allow ssh
+  - ufw enable
+  - systemctl enable --now qemu-guest-agent
